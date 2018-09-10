@@ -1,0 +1,306 @@
+swagger: "2.0"
+info:
+  title: Resolute
+  description: Onboarding the customers and getting their users and agents.
+  version: "1.0.0"
+definitions:
+  Organisation:
+    type: object
+    properties:
+      id:
+        type: integer
+      organisationName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      logoUrl:
+        type: string
+      createdOn:
+        type: string
+      createdBy: 
+        type: string
+      updatedOn:
+        type: string   
+      updatedBy :
+        type: string
+      organisationDisplayName :
+        type: string
+  Department:
+    type: object
+    properties:
+      departmentId:
+        type: integer
+      department:
+        type: string
+      createdOn:
+        type: string
+      createdBy: 
+        type: string
+      updatedOn:
+        type: string   
+      updatedBy :
+        type: string
+  UserSocialId:
+    type: object
+    properties:
+      socialId:
+        type: int
+      source:
+        type: string
+      identifier:
+        type: string
+      createdOn:
+        type: string
+      createdBy: 
+        type: string
+      updatedOn:
+        type: string   
+      updatedBy :
+        type: string    
+  EndUser: 
+    type: object
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      phonenumber:
+        type: string
+      profileimgurl:
+        type: string
+      organization:
+        type: Organization
+      createdOn:
+        type: string
+      createdBy: 
+        type: string
+      updatedOn:
+        type: string   
+      updatedBy :
+        type: string   
+      socialId:
+        type: UserSocialId  
+  Agent:
+    type: object
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      phonenumber:
+        type: string
+      profileimgurl:
+        type: string
+      organization:
+        type: Organization
+      createdOn:
+        type: string
+      createdBy: 
+        type: string
+      updatedOn:
+        type: string   
+      updatedBy :
+        type: string 
+      department:
+       type: Department
+      Role: 
+        type: string
+
+paths:
+  /Customer_Signup:
+    get:
+      description: Get all the customers who signed up
+      produces:
+        - application/json
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Organisation'
+    post:
+      description: Add a new customer who signs up
+      produces:
+        - application/json
+      responses:
+        201:
+          description: Created
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Organisation'      
+  /Customer_Signup/{id}:
+    get:
+      description: Get the customer by id who signed up
+      produces:
+        - application/json
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of Customer to return"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Organisation'
+  /Customer_Signup/{query}:
+    get:
+      description: Get the customer by his Organization name and Email
+      produces:
+        - application/json
+      parameters:
+      - name: "query"
+        in: "path"
+        description: "Organization name and Email of Customer to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Organisation' 
+  /EndUsers:
+    get: 
+      description: Get the end users of the organization
+      produces:
+        -application/json
+      parameters:
+      - name: "query"
+        in: "path"
+        description: "Organization name and Email of Customer to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EndUser'
+    post:
+      description: Add a new end user provided by the customer
+      produces:
+        - application/json
+      responses:
+        201:
+          description: Created
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EndUser'            
+  /EndUsers/{id}:
+    get:
+        description: Get the endusers by id
+        produces:
+          - application/json
+        parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of End User to return"
+          required: true
+          type: "integer"
+        responses:
+          200:
+            description: OK
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/EndUser'
+  /EndUsers/{query}:
+    get:
+      description: Get the enduser by his Organization name and Email
+      produces:
+        - application/json
+      parameters:
+      - name: "query"
+        in: "path"
+        description: "Organization name and Email of EndUser to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EndUser' 
+  /Agents:
+    get: 
+      description: Get the agents of the organization
+      produces:
+        -application/json
+      parameters:
+      - name: "query"
+        in: "path"
+        description: "Organization name and Email of agents to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Agent'
+    post:
+      description: Add a new agents provided by the customer
+      produces:
+        - application/json
+      responses:
+        201:
+          description: Created
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Agent'       
+  /Agents/{id}:
+    get:
+        description: Get the agents by id
+        produces:
+          - application/json
+        parameters:
+        - name: "id"
+          in: "path"
+          description: "ID of the agent to return"
+          required: true
+          type: "integer"
+        responses:
+          200:
+            description: OK
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/Agent'
+  /Agents/{query}:
+    get:
+      description: Get the agents by his Organization name and Email
+      produces:
+        - application/json
+      parameters:
+      - name: "query"
+        in: "path"
+        description: "Organization name and Email of agents to return"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Agent'               
+
+
+
+      
+
+
