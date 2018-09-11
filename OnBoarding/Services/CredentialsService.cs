@@ -8,38 +8,34 @@ namespace OnBoarding.Services
 {
     public class CredentialsService : ICredentialsService
     {
-        private readonly ResoluteContext  _context;
+        private readonly OnBoardingContext _context;
 
-        public CredentialsService(ResoluteContext  context)
+        public CredentialsService(OnBoardingContext context)
         {
             _context = context;
         }
         public IEnumerable<Organisation> GetAllSignUp()
         {
-            return _context.organisation;
+            return _context.Organisation;
         }
-        public async Task<Organisation> GetSignUp(int id)
+        public async Task<Organisation> GetSignUp(long id)
         {
-            return await _context.organisation.FindAsync(id);
+            return await _context.Organisation.FindAsync(id);
         }
 
-        public async Task CreateCredentials(Organisation organisationSignup)
+        public async Task CreateCredentials(Organisation organisation)
         {
-            _context.organisation.Add(organisationSignup);
+            _context.Organisation.Add(organisation);
             await _context.SaveChangesAsync();
         }
-        public Organisation GetAllorganisation(string organisationName, string Email)
+        public Organisation GetAllOrganisation(string organisationName, string Email)
         {
-            //return _context.organisation.Where(
-            //     element => element.organisationName == organisationName
-            //    || element.Email == Email
-            //    ).ToList()[0];
+            return  _context.Organisation.Where(
 
-            Organisation temp;
-           
-           return temp = _context.organisation.Where(element => element.OrganisationName == (organisationName == null ? element.OrganisationName : organisationName)
-                     && element.Email == (Email == null ? element.Email : Email)).ToList()[0];
-
+                element => element.OrganisationName == organisationName 
+                || element.Email == Email
+                ).ToList()[0];
+                //.Where(x => ((Organisation_name == null || x.Organisation_name == Organisation_name) && (Email == null || x.Email == Email)));
         }
     }
 }

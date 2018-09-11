@@ -19,45 +19,38 @@ namespace OnBoarding.Controllers
         {
             _service = service;
         }
-        // GET: api/OrganisationSignUp
+        // GET: api/Organisation_Signup
         [HttpGet]
-        public IEnumerable<Organisation> GetOrganisationSignUp()
+        public IEnumerable<Organisation> GetOrganisation()
         {
             return _service.GetAllSignUp();
         }
-        // GET: api/OrganisationSignUp/5
+        // GET: api/Organisation_Signup/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrganisationSignUp([FromRoute] int id)
+        public async Task<IActionResult> GetOrganisation([FromRoute] long id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            Organisation OrganisationSignUp = await _service.GetSignUp(id);
-            if (OrganisationSignUp == null)
+            Organisation Organisation = await _service.GetSignUp(id);
+            if (Organisation == null)
             {
                 return NotFound();
             }
-            return Ok(OrganisationSignUp);
+            return Ok(Organisation);
         }
 
-        [HttpGet("query")]
-        public async Task<IActionResult> GetorganisationByQuery([FromQuery(Name = "organisationName")] string organisationName, [FromQuery(Name = "Email")] string Email)
-        {
-            var result = _service.GetAllorganisation(organisationName, Email);
-            return Ok(result);
-        }
-
-        // POST: api/OrganisationSignUp
+        // POST: api/Organisation_Signup
         [HttpPost]
-        public async Task<IActionResult> PostOrganisationSignUp([FromBody] Organisation organisation)
+        public async Task<IActionResult> PostOrganisation([FromBody] Organisation Organisation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            await _service.CreateCredentials(organisation);
-            return CreatedAtAction("GetOrganisationSignUp", new { id = organisation.Id }, organisation);
+            await _service.CreateCredentials(Organisation);
+            return CreatedAtAction("GetOrganisation", new { id = Organisation.Id }, Organisation);
         }
     }
 }

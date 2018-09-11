@@ -29,7 +29,7 @@ namespace OnBoarding
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            
+
             services.AddCors(o => o.AddPolicy("AllowSpecificOrigin", builder =>
               builder.AllowAnyHeader()
                      .AllowAnyMethod()
@@ -37,10 +37,11 @@ namespace OnBoarding
                   )
               );
 
-            services.AddDbContext<ResoluteContext >(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("ResoluteContext ")));
+            services.AddDbContext<OnBoardingContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("OnBoardingContext")));
             services.AddScoped<ICredentialsService, CredentialsService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IEndUserService, EndUserService>();
+            services.AddScoped<IAgentService, AgentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

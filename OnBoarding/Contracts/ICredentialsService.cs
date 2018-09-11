@@ -6,9 +6,9 @@ namespace OnBoarding.Services
 {
     public interface ICredentialsService
     {
-        Task CreateCredentials(Organisation OrganisationSignUp);
+        Task CreateCredentials(Organisation Organisation);
         IEnumerable<Organisation> GetAllSignUp();
-        Task<Organisation> GetSignUp(int id);
-        Organisation GetAllorganisation(string organisationName, string Email);
+        Task<Organisation> GetSignUp(long id);
+        Organisation GetAllOrganisation(string Organisation_name, string Email);
     }
 }

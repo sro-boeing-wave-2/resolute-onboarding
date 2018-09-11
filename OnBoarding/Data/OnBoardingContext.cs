@@ -7,17 +7,18 @@ using OnBoarding.Models;
 
 namespace OnBoarding.Models
 {
-    public class ResoluteContext : DbContext
+    public class OnBoardingContext : DbContext
     {
-        public ResoluteContext(DbContextOptions<ResoluteContext > options)
+        public OnBoardingContext (DbContextOptions<OnBoardingContext> options)
             : base(options)
         {
         }
 
         public DbSet<OnBoarding.Models.Agent> Agent { get; set; }
-        public DbSet<OnBoarding.Models.Organisation> organisation { get; set; }
+        public DbSet<OnBoarding.Models.Organisation> Organisation { get; set; }
         public DbSet<OnBoarding.Models.Department> Department { get; set; }
         public DbSet<OnBoarding.Models.EndUser> EndUser { get; set; }
         public DbSet<OnBoarding.Models.UserSocialId> UserSocialId { get; set; }
+
     }
 }

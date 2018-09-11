@@ -17,63 +17,66 @@ namespace OnBoarding.Controllers
     public class EndUsersController : ControllerBase
     {
 
-        private readonly IUserService _service;
-
-        public EndUsersController(IUserService service)
+        private IEndUserService _service;
+        public EndUsersController(IEndUserService service)
         {
             _service = service;
         }
+
         // GET: api/EndUsers
         [HttpGet]
         public IEnumerable<EndUser> GetEndUser()
         {
-            return _service.GetEndUser();
+            return _service.RetrieveUser();
         }
+
+       
 
         // GET: api/EndUsers/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEndUser([FromRoute] int id)
+        public async Task<IActionResult> GetEndUser([FromRoute] long id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var endUser = await _service.GetEndUser(id);
+            EndUser endUser = await _service.RetrieveUserById(id);
+
+            if (endUser == null)
+            {
+                return NotFound();
+            }
+
             return Ok(endUser);
         }
 
 
+
+        [HttpGet("query")]
+        public async Task<IActionResult> GetEndUser([FromQuery(Name = "Name")] string Name, [FromQuery(Name = "Email")] string Email, [FromQuery(Name = "phonenumber")] string PhoneNumber)
+        {
+            string email = _service.TrimInput(Email);
+            string name = _service.TrimInput(Name);
+            string phoneNumber = _service.TrimInput(PhoneNumber);
+            return Ok(await _service.RetrieveUserDto(email, name, phoneNumber));
+
+        }
+
+       
+
+
         // POST: api/EndUsers
         [HttpPost]
-        public async Task<IActionResult> PostEndUser([FromBody] Organisation organisation)
+        public async Task<IActionResult> PostEndUser([FromBody] Organisation Organisation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            return await ExtractDataEndUser(organisation);
-        }
-        [HttpGet("query")]
-        public async Task<IActionResult> GetEndUserByQuery([FromQuery(Name = "Name")] string Name, [FromQuery(Name = "Email")] string Email, [FromQuery(Name = "phonenumber")] string phonenumber)
-        {
-            var result = _service.GetAllEndUser(Name, Email, phonenumber);
-            return Ok(result);
-        }
-        public async Task<IActionResult> ExtractDataEndUser(Organisation organisation)
-        {
-            await _service.ExtractDataEndUser(organisation);
+            await _service.ExtractData(Organisation);
             return Ok();
         }
-        public static async Task<string> ReadFileEndUserAsync(string filepath)
-        {
-            string fileData = "";
-            using (StreamReader streamReader = new StreamReader(filepath))
-            {
-                fileData = await streamReader.ReadToEndAsync();
-            }
-            return fileData;
-        }
+
     }
 }

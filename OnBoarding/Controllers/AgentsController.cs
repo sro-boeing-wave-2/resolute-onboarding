@@ -14,68 +14,62 @@ namespace OnBoarding.Controllers
     [ApiController]
     public class AgentsController : ControllerBase
     {
-        private readonly IUserService _service;
+        private readonly IAgentService _service;
 
-        public AgentsController(IUserService service)
+        public AgentsController(IAgentService service)
         {
             _service = service;
         }
 
         // GET: api/Agents
         [HttpGet]
-        public IEnumerable<Agent> GetAgent()
+        public IEnumerable<Agent> GetAgents()
         {
-            return _service.GetAgent();
-            /*Include(x => x.Department).Include(x => x.Organization);*/
+            return _service.RetrieveAgent();
+        }
+        [HttpGet("query")]
+        public async Task<IActionResult> GetAgentAsync([FromQuery(Name = "Name")] string Name, [FromQuery(Name = "Email")] string Email, [FromQuery(Name = "phonenumber")] string PhoneNumber)
+        {
+            string email = _service.TrimInput(Email);
+            string name = _service.TrimInput(Name);
+            string phoneNumber = _service.TrimInput(PhoneNumber);
+            return Ok(await _service.RetrieveAgentDto(email, name, phoneNumber));
+
         }
 
         // GET: api/Agents/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAgent([FromRoute] int id)
+        public async Task<IActionResult> GetAgent([FromRoute] long id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var agent = await _service.GetAgent(id);
+            Agent agent = await _service.RetrieveAgentById(id);
+
+           
+            if (agent == null)
+            {
+                return NotFound();
+            }
 
             return Ok(agent);
         }
 
-        [HttpGet("query")]
-        public async Task<IActionResult> GetAgentByQuery([FromQuery(Name = "Name")] string Name, [FromQuery(Name = "Email")] string Email, [FromQuery(Name = "phonenumber")] string phonenumber)
-        {
-            var result = _service.GetAllAgents(Name, Email, phonenumber);
-            return Ok(result);
-        }
 
         // POST: api/Agents
         [HttpPost]
-        public async Task<IActionResult> PostAgent([FromBody] Organisation organisation)
+        public async Task<IActionResult> PostAgent([FromBody] Organisation Organisation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return await ExtractData(organisation);
-        }
-
-
-        public async Task<IActionResult> ExtractData(Organisation organisation)
-        {
-            await _service.ExtractData(organisation);
+            await _service.ExtractData(Organisation);
             return Ok();
         }
-        public static async Task<string> ReadFileAsync(string filepath)
-        {
-            string fileData = "";
-            using (StreamReader streamReader = new StreamReader(filepath))
-            {
-                fileData = await streamReader.ReadToEndAsync();
-            }
-            return fileData;
-        }
+
     }
 }
