@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.EntityFrameworkCore;
 using OnBoarding.Models;
 using OnBoarding.Services;
@@ -46,8 +47,16 @@ namespace OnBoarding.Controllers
         [HttpGet("query")]
         public async Task<IActionResult> GetAgentByQuery([FromQuery(Name = "Name")] string Name, [FromQuery(Name = "Email")] string Email, [FromQuery(Name = "phonenumber")] string phonenumber)
         {
-            var result = _service.GetAllAgents(Name, Email, phonenumber);
-            return Ok(result);
+            try
+            {
+                var result = _service.GetAllAgents(Name, Email, phonenumber);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Result Not Found");
+                return BadRequest(ModelState);
+            }
         }
 
         // POST: api/Agents
@@ -61,8 +70,6 @@ namespace OnBoarding.Controllers
 
             return await ExtractData(organisation);
         }
-
-
         public async Task<IActionResult> ExtractData(Organisation organisation)
         {
             await _service.ExtractData(organisation);

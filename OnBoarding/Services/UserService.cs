@@ -7,13 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnBoarding.Models;
 using System.Text.RegularExpressions;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Text;
+
 
 namespace OnBoarding.Services
 {
     public class UserService : IUserService
     {
         private readonly ResoluteContext _context;
-
+        public static readonly HttpClient _client = new HttpClient();
         public UserService(ResoluteContext context)
         {
             _context = context;
@@ -42,6 +46,7 @@ namespace OnBoarding.Services
         public async Task PostAgent([FromBody] Organisation organisation)
         {
             await ExtractData(organisation);
+            
         }
         public async Task ExtractData(Organisation organisation)
         {
@@ -59,6 +64,7 @@ namespace OnBoarding.Services
             int indexOfPhoneNumber = Array.IndexOf(header, "PhoneNumber");
             int indexOfProfileImage = Array.IndexOf(header, "ProfileImg");
             int indexOfDepartment = Array.IndexOf(header, "Department");
+            int indexOfPassword = Array.IndexOf(header, "Password");
 
             for (int i = 1; i <= contents.Count() - 1; i++)
             {
@@ -74,11 +80,33 @@ namespace OnBoarding.Services
                     CreatedOn = DateTime.Now,
                     UpdatedOn = DateTime.Now
                 };
+                string email = info[indexOfEmail].Trim('\"');
+                string password = info[indexOfPassword].Trim('\"');
+
+                AuthDto agentDetails = new AuthDto
+                {
+                    Email = info[indexOfEmail].Trim('\"'),
+                    Password = "TestPassword@123"
+                };
+
+                HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, "http://35.189.155.116:8081/api/Auth/user/add")
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(agentDetails), UnicodeEncoding.UTF8, "application/json")
+                };
+                var response = await _client.SendAsync(postMessage);
+                var responseString = await response.Content.ReadAsStringAsync();
                 _context.Agent.Add(agent);
                 await _context.SaveChangesAsync();
             }
-
         }
+        //public async Task PostUserInfoAsync(string email, string Password)
+        //{
+        //    Dictionary<string, string> auth = new Dictionary<string, string>();
+        //    auth.Add("Username", email);
+        //    auth.Add("TestPassword@123", Password);
+        //    Console.WriteLine(JsonConvert.SerializeObject(auth));
+        //    var response = await _client.PostAsync("http://35.189.155.116:8081/api/Auth/user/add", new StringContent(JsonConvert.SerializeObject(auth), UnicodeEncoding.UTF8, "application/json"));
+        //}
         public async Task<string> ReadFileAsync(string filepath)
         {
             string fileData = "";
@@ -88,8 +116,8 @@ namespace OnBoarding.Services
             }
             return fileData;
         }
-
-        //EndUser Services
+       
+        // EndUser Services
         public IEnumerable<EndUser> GetEndUser()
         {
             return _context.EndUser.Include(x => x.SocialId).Include(x => x.Organization);
