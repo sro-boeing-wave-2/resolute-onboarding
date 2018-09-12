@@ -56,10 +56,11 @@ namespace OnBoarding.Services
 
                 AuthDto agentDetails = new AuthDto
                 {
-                    Email = info[indexOfEmail].Trim('\"'),
+                    Username = info[indexOfEmail].Trim('\"'),
                     Password = "TestPassword@123"
                 };
 
+               
                 HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, "http://35.189.155.116:8081/api/Auth/user/add")
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(agentDetails), UnicodeEncoding.UTF8, "application/json")

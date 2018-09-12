@@ -7,10 +7,10 @@ namespace OnBoarding.Models
 {
     public class AuthDto
     {
-        string email;
+        string username;
         string password;
 
-        public string Email { get => email; set => email = value; }
         public string Password { get => password; set => password = value; }
+        public string Username { get => username; set => username = value; }
     }
 }
