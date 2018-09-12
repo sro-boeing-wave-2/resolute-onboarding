@@ -34,14 +34,16 @@ namespace OnBoarding.Services
         }
         public Agent GetAllAgents(string Name, string Email, string phonenumber)
         {
-            string email = (Email == null) ? string.Empty : Email.Trim('\"').Trim('\\');
-            string name = (Name == null) ? string.Empty : Name.Trim('\"').Trim('\\');
-            string phoneNumber = (phonenumber == null) ? string.Empty : phonenumber.Trim('\"').Trim('\\');
-            return _context.Agent.Where(
-              element => element.Name == name
-             || element.Email == email
-             || element.Phonenumber == phoneNumber
-              ).Include(x => x.Department).ToList()[0];
+            
+                string email = (Email == null) ? string.Empty : Email.Trim('\"').Trim('\\');
+                string name = (Name == null) ? string.Empty : Name.Trim('\"').Trim('\\');
+                string phoneNumber = (phonenumber == null) ? string.Empty : phonenumber.Trim('\"').Trim('\\');
+                return _context.Agent.Where(
+                  element => element.Name == name
+                 || element.Email == email
+                 || element.Phonenumber == phoneNumber
+                  ).Include(x => x.Department).ToList()[0];
+            
         }
         public async Task PostAgent([FromBody] Organisation organisation)
         {
@@ -64,7 +66,7 @@ namespace OnBoarding.Services
             int indexOfPhoneNumber = Array.IndexOf(header, "PhoneNumber");
             int indexOfProfileImage = Array.IndexOf(header, "ProfileImg");
             int indexOfDepartment = Array.IndexOf(header, "Department");
-            int indexOfPassword = Array.IndexOf(header, "Password");
+            //int indexOfPassword = Array.IndexOf(header, "Password");
 
             for (int i = 1; i <= contents.Count() - 1; i++)
             {
@@ -80,8 +82,6 @@ namespace OnBoarding.Services
                     CreatedOn = DateTime.Now,
                     UpdatedOn = DateTime.Now
                 };
-                string email = info[indexOfEmail].Trim('\"');
-                string password = info[indexOfPassword].Trim('\"');
 
                 AuthDto agentDetails = new AuthDto
                 {

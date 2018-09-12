@@ -56,8 +56,16 @@ namespace OnBoarding.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            OrganisationDto organisationDto = new OrganisationDto
+            {
+                OrganisationName = organisation.OrganisationName,
+                Email = organisation.Email,
+                ImageUrl = organisation.LogoUrl
+            };
+
             await _service.CreateCredentials(organisation);
-            return CreatedAtAction("GetOrganisationSignUp", new { id = organisation.Id }, organisation);
+            return Ok(organisationDto);
         }
     }
 }
