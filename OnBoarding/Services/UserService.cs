@@ -99,14 +99,6 @@ namespace OnBoarding.Services
                 await _context.SaveChangesAsync();
             }
         }
-        //public async Task PostUserInfoAsync(string email, string Password)
-        //{
-        //    Dictionary<string, string> auth = new Dictionary<string, string>();
-        //    auth.Add("Username", email);
-        //    auth.Add("TestPassword@123", Password);
-        //    Console.WriteLine(JsonConvert.SerializeObject(auth));
-        //    var response = await _client.PostAsync("http://35.189.155.116:8081/api/Auth/user/add", new StringContent(JsonConvert.SerializeObject(auth), UnicodeEncoding.UTF8, "application/json"));
-        //}
         public async Task<string> ReadFileAsync(string filepath)
         {
             string fileData = "";
