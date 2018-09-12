@@ -10,7 +10,7 @@ using OnBoarding.Models;
 namespace OnBoarding.Migrations
 {
     [DbContext(typeof(ResoluteContext))]
-    [Migration("20180910070542_initial")]
+    [Migration("20180912050331_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
