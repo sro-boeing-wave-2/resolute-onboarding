@@ -9,9 +9,9 @@ using OnBoarding.Models;
 
 namespace OnBoarding.Migrations
 {
-    [DbContext(typeof(ResoluteContext))]
-    [Migration("20180907061518_initial")]
-    partial class initial
+    [DbContext(typeof(OnBoardingContext))]
+    [Migration("20180912104500_FirstMigration")]
+    partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,7 +23,7 @@ namespace OnBoarding.Migrations
 
             modelBuilder.Entity("OnBoarding.Models.Agent", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -31,19 +31,17 @@ namespace OnBoarding.Migrations
 
                     b.Property<DateTime>("CreatedOn");
 
-                    b.Property<int?>("DepartmentId");
+                    b.Property<long?>("DepartmentId");
 
                     b.Property<string>("Email");
 
                     b.Property<string>("Name");
 
-                    b.Property<int?>("OrganizationId");
+                    b.Property<long?>("OrganizationId");
 
-                    b.Property<string>("Phonenumber");
+                    b.Property<string>("PhoneNumber");
 
                     b.Property<string>("ProfileImgUrl");
-
-                    b.Property<string>("Role");
 
                     b.Property<long>("UpdatedBy");
 
@@ -60,7 +58,7 @@ namespace OnBoarding.Migrations
 
             modelBuilder.Entity("OnBoarding.Models.Department", b =>
                 {
-                    b.Property<int>("DepartmentId")
+                    b.Property<long>("DepartmentId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -81,7 +79,7 @@ namespace OnBoarding.Migrations
 
             modelBuilder.Entity("OnBoarding.Models.EndUser", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -93,9 +91,9 @@ namespace OnBoarding.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int?>("OrganizationId");
+                    b.Property<long?>("OrganizationId");
 
-                    b.Property<string>("Phonenumber");
+                    b.Property<string>("PhoneNumber");
 
                     b.Property<string>("ProfileImgUrl");
 
@@ -112,7 +110,7 @@ namespace OnBoarding.Migrations
 
             modelBuilder.Entity("OnBoarding.Models.Organisation", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -136,12 +134,12 @@ namespace OnBoarding.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("organisation");
+                    b.ToTable("Organisation");
                 });
 
             modelBuilder.Entity("OnBoarding.Models.UserSocialId", b =>
                 {
-                    b.Property<int>("SocialId")
+                    b.Property<long>("SocialId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -149,7 +147,7 @@ namespace OnBoarding.Migrations
 
                     b.Property<DateTime>("CreatedOn");
 
-                    b.Property<int?>("EndUserId");
+                    b.Property<long?>("EndUserId");
 
                     b.Property<string>("Identifier");
 

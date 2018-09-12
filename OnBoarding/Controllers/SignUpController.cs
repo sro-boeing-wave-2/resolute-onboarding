@@ -43,14 +43,21 @@ namespace OnBoarding.Controllers
 
         // POST: api/Organisation_Signup
         [HttpPost]
-        public async Task<IActionResult> PostOrganisation([FromBody] Organisation Organisation)
+        public async Task<IActionResult> PostOrganisation([FromBody] Organisation organisation)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            await _service.CreateCredentials(Organisation);
-            return CreatedAtAction("GetOrganisation", new { id = Organisation.Id }, Organisation);
+            OrganisationDto organisationDto = new OrganisationDto
+            {
+                OrganisationName = organisation.OrganisationName,
+                Email = organisation.Email,
+                ImageUrl = organisation.LogoUrl
+            };
+
+            await _service.CreateCredentials(organisation);
+            return Ok(organisationDto);
         }
     }
 }

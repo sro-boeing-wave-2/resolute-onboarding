@@ -36,6 +36,12 @@ namespace OnBoarding.Controllers
             return Ok(await _service.RetrieveAgentDto(email, name, phoneNumber));
 
         }
+        [HttpGet("GetName")]
+        public string GetAgentName([FromQuery(Name = "Id")] long id)
+        {
+            return _service.GetUserName(id);
+        }
+
 
         // GET: api/Agents/5
         [HttpGet("{id}")]
@@ -48,7 +54,7 @@ namespace OnBoarding.Controllers
 
             Agent agent = await _service.RetrieveAgentById(id);
 
-           
+
             if (agent == null)
             {
                 return NotFound();

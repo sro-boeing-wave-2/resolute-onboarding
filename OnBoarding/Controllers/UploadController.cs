@@ -13,42 +13,42 @@ namespace OnBoarding.Controllers
     [Route("api/[controller]")]
     public class UploadController : Controller
     {
-            private IHostingEnvironment _hostingEnvironment;
+        private IHostingEnvironment _hostingEnvironment;
 
-            public UploadController(IHostingEnvironment hostingEnvironment)
-            {
-                _hostingEnvironment = hostingEnvironment;
-            }
+        public UploadController(IHostingEnvironment hostingEnvironment)
+        {
+            _hostingEnvironment = hostingEnvironment;
+        }
 
-            [HttpPost, DisableRequestSizeLimit]
-            public ActionResult UploadFile()
+        [HttpPost, DisableRequestSizeLimit]
+        public ActionResult UploadFile()
+        {
+            try
             {
-                try
+                var file = Request.Form.Files[0];
+                string folderName = "Upload";
+                string webRootPath = _hostingEnvironment.WebRootPath;
+                string newPath = Path.Combine(webRootPath, folderName);
+                if (!Directory.Exists(newPath))
                 {
-                    var file = Request.Form.Files[0];
-                    string folderName = "Upload";
-                    string webRootPath = _hostingEnvironment.WebRootPath;
-                    string newPath = Path.Combine(webRootPath, folderName);
-                    if (!Directory.Exists(newPath))
-                    {
-                        Directory.CreateDirectory(newPath);
-                    }
-                    if (file.Length > 0)
-                    {
-                        string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                        string fullPath = Path.Combine(newPath, fileName);
-                        using (var stream = new FileStream(fullPath, FileMode.Create))
-                        {
-                            file.CopyTo(stream);
-                        }
-                    }
-                    return Json("Upload Successful.");
+                    Directory.CreateDirectory(newPath);
                 }
-                catch (System.Exception ex)
+                if (file.Length > 0)
                 {
-                    return Json("Upload Failed: " + ex.Message);
+                    string fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    string fullPath = Path.Combine(newPath, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
                 }
+                return Json("Upload Successful.");
             }
-        
-}
+            catch (System.Exception ex)
+            {
+                return Json("Upload Failed: " + ex.Message);
+            }
+        }
+
+    }
 }

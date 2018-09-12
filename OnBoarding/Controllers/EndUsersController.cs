@@ -30,7 +30,7 @@ namespace OnBoarding.Controllers
             return _service.RetrieveUser();
         }
 
-       
+
 
         // GET: api/EndUsers/5
         [HttpGet("{id}")]
@@ -63,7 +63,11 @@ namespace OnBoarding.Controllers
 
         }
 
-       
+        [HttpGet("GetName")]
+        public string GetEndUserName([FromQuery(Name = "Id")] long id)
+        {
+            return _service.GetUserName(id);
+        }
 
 
         // POST: api/EndUsers

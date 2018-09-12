@@ -8,6 +8,7 @@ namespace OnBoarding.Services
     {
         Task ExtractData(Organisation Organisation);
         string TrimInput(string Input);
+        string GetUserName(long id);
     }
     public interface IEndUserService : IUserService
     {

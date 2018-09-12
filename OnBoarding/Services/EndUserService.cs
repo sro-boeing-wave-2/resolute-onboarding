@@ -26,6 +26,18 @@ namespace OnBoarding.Services
             return await _context.EndUser.Include(x => x.SocialId).Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public string GetUserName(long id)
+        {
+            try
+            {
+                return _context.EndUser.FirstOrDefault(x => x.Id == id).Name;
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
+
         public async Task<EndUserDto> RetrieveUserDto(string email, string name, string phoneNumber)
         {
             EndUser endUser = await _context.EndUser.Include(x => x.SocialId).Include(x => x.Organization).FirstOrDefaultAsync(EndUserMatches(email, name, phoneNumber));

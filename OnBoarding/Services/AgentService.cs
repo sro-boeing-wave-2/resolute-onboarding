@@ -5,11 +5,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OnBoarding.Models;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace OnBoarding.Services
 {
     public class AgentService : IAgentService
     {
+        public static readonly HttpClient _client = new HttpClient();
         private readonly OnBoardingContext _context;
         public AgentService(OnBoardingContext context)
         {
@@ -47,14 +51,32 @@ namespace OnBoarding.Services
                     ProfileImgUrl = info[indexOfProfileImage].Trim('\"'),
                     Department = _context.Department.FirstOrDefault(x => x.DepartmentName == info[indexOfDepartment].Trim('\"')) ?? new Department { DepartmentName = info[indexOfDepartment].Trim('\"'), CreatedOn = DateTime.Now, UpdatedOn = DateTime.Now },
                     Organization = _context.Organisation.FirstOrDefault(x => x.OrganisationName == Organisation.OrganisationName) ?? Organisation,
-                    CreatedOn = DateTime.Now,
                     UpdatedOn = DateTime.Now
                 };
+
+                AuthDto agentDetails = new AuthDto
+                {
+                    Email = info[indexOfEmail].Trim('\"'),
+                    Password = "TestPassword@123"
+                };
+
+                HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, "http://35.189.155.116:8081/api/Auth/user/add")
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(agentDetails), UnicodeEncoding.UTF8, "application/json")
+                };
+                var response = await _client.SendAsync(postMessage);
+                var responseString = await response.Content.ReadAsStringAsync();
 
                 _context.Agent.Add(agent);
                 await _context.SaveChangesAsync();
             }
         }
+
+        public string GetUserName(long id)
+        {
+            return _context.Agent.FirstOrDefault(x => x.Id == id).Name;
+        }
+
         public IEnumerable<Agent> RetrieveAgent()
         {
             return _context.Agent.Include(x => x.Department).Include(x => x.Organization);
@@ -62,7 +84,7 @@ namespace OnBoarding.Services
 
         public async Task<Agent> RetrieveAgentById(long id)
         {
-            return await _context.Agent.Include(x=>x.Department).Include(x=>x.Organization).FirstOrDefaultAsync(x=>x.Id==id);
+            return await _context.Agent.Include(x => x.Department).Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<AgentDto> RetrieveAgentDto(string email, string name, string phoneNumber)
