@@ -46,7 +46,8 @@ namespace OnBoarding.Services
                 EndUserId = endUser.Id,
                 Name = endUser.Name,
                 ProfileImageUrl = endUser.ProfileImgUrl,
-                OrganisartionId = endUser.Organization.Id
+                OrganisationId = endUser.Organization.Id,
+                OrganisationEmail = endUser.Organization.Email
             };
 
             return endUserDto;
