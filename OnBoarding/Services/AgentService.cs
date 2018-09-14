@@ -97,7 +97,9 @@ namespace OnBoarding.Services
                 AgentId = agent.Id,
                 Name = agent.Name,
                 ProfileImageUrl = agent.ProfileImgUrl,
-                OrganisartionId = agent.Organization.Id
+                OrganisartionId = agent.Organization.Id,
+                DepartmentName = agent.Department.DepartmentName,
+                OrganisationName = agent.Organization.OrganisationName
             };
 
             return agentDto;
