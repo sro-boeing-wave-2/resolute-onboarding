@@ -25,16 +25,33 @@ namespace OnBoarding.Services
         //Agent Services
         public IEnumerable<Agent> GetAgent()
         {
-            return _context.Agent.Include(x => x.Department).Include(x => x.Organization);
+            try
+            {
+                return _context.Agent.Include(x => x.Department).Include(x => x.Organization);
+            }
+            catch (KeyNotFoundException e)
+            {
+                Console.WriteLine("Data not found");
+                throw e;
+            }
         }
 
         public async Task<Agent> GetAgent(int id)
         {
-            return await _context.Agent.FindAsync(id);
+            try
+            {
+                return await _context.Agent.FindAsync(id);
+            }
+            catch (KeyNotFoundException e)
+            {
+                Console.WriteLine("Data not found");
+                throw e;
+            }
         }
         public Agent GetAllAgents(string Name, string Email, string phonenumber)
         {
-            
+            try
+            {
                 string email = (Email == null) ? string.Empty : Email.Trim('\"').Trim('\\');
                 string name = (Name == null) ? string.Empty : Name.Trim('\"').Trim('\\');
                 string phoneNumber = (phonenumber == null) ? string.Empty : phonenumber.Trim('\"').Trim('\\');
@@ -43,12 +60,16 @@ namespace OnBoarding.Services
                  || element.Email == email
                  || element.Phonenumber == phoneNumber
                   ).Include(x => x.Department).ToList()[0];
-            
+            }
+            catch (KeyNotFoundException e)
+            {
+                Console.WriteLine("Data not found");
+                throw e;
+            }
         }
         public async Task PostAgent([FromBody] Organisation organisation)
         {
             await ExtractData(organisation);
-            
         }
         public async Task ExtractData(Organisation organisation)
         {
@@ -85,7 +106,7 @@ namespace OnBoarding.Services
 
                 AuthDto agentDetails = new AuthDto
                 {
-                    Email = info[indexOfEmail].Trim('\"'),
+                    Username = info[indexOfEmail].Trim('\"'),
                     Password = "TestPassword@123"
                 };
 
@@ -101,25 +122,50 @@ namespace OnBoarding.Services
         }
         public async Task<string> ReadFileAsync(string filepath)
         {
-            string fileData = "";
-            using (StreamReader streamReader = new StreamReader(filepath))
+            try
             {
-                fileData = await streamReader.ReadToEndAsync();
+                string fileData = "";
+                using (StreamReader streamReader = new StreamReader(filepath))
+                {
+                    fileData = await streamReader.ReadToEndAsync();
+                }
+                return fileData;
             }
-            return fileData;
+            catch (FileNotFoundException ex)
+            {
+                Console.WriteLine("File not found");
+                throw ex;
+            }
         }
-       
+
         // EndUser Services
         public IEnumerable<EndUser> GetEndUser()
         {
-            return _context.EndUser.Include(x => x.SocialId).Include(x => x.Organization);
+            try
+            {
+                return _context.EndUser.Include(x => x.SocialId).Include(x => x.Organization);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine("data not found");
+                throw ex;
+            }
+
         }
 
         // GET: api/EndUsers/5
 
         public async Task<EndUser> GetEndUser(int id)
         {
-            return await _context.EndUser.Include(x => x.SocialId).Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
+            try
+            {
+                return await _context.EndUser.Include(x => x.SocialId).Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine("data not found");
+                throw ex;
+            }
         }
 
         // POST: api/EndUsers
@@ -127,80 +173,121 @@ namespace OnBoarding.Services
         {
             await ExtractDataEndUser(organisation);
         }
+
         public EndUser GetAllEndUser(string Name, string Email, string phonenumber)
         {
-            string email = (Email==null)?string.Empty: Email.Trim('\"').Trim('\\');
-            string name = (Name == null) ? string.Empty : Name.Trim('\"').Trim('\\');
-            string phoneNumber = (phonenumber == null) ? string.Empty : phonenumber.Trim('\"').Trim('\\');
-            return _context.EndUser.Where(
-                element => element.Name == name
-               || element.Email == email
-               || element.Phonenumber == phoneNumber
-                ).Include(x => x.SocialId).ToList()[0];
+            try
+            {
+                string email = (Email == null) ? string.Empty : Email.Trim('\"').Trim('\\');
+                string name = (Name == null) ? string.Empty : Name.Trim('\"').Trim('\\');
+                string phoneNumber = (phonenumber == null) ? string.Empty : phonenumber.Trim('\"').Trim('\\');
+                return _context.EndUser.Where(
+                    element => element.Name == name
+                   || element.Email == email
+                   || element.Phonenumber == phoneNumber
+                    ).Include(x => x.SocialId).ToList()[0];
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine("data not found");
+                throw ex;
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine("duplicate data found");
+                throw ex;
+            }
         }
         public async Task ExtractDataEndUser(Organisation organisation)
         {
-            string filePathCSV = @"./wwwroot/Upload/EndUser.csv";
-            Task<string> fileData = ReadFileEndUserAsync(filePathCSV);
-            await fileData;
-            string[] contents = fileData.Result.Split('\n');
-            int countOfSocialIds = Regex.Matches(contents[0], "/Source").Count;
-            string[] header = contents[0].Split(',');
-            for (int i = 0; i < header.Length; i++)
+            try
             {
-                header[i] = header[i].Replace("\r", string.Empty).Trim('\"');
+                string filePathCSV = @"./wwwroot/Upload/EndUser.csv";
+                Task<string> fileData = ReadFileEndUserAsync(filePathCSV);
+                await fileData;
+                string[] contents = fileData.Result.Split('\n');
+                int countOfSocialIds = Regex.Matches(contents[0], "/Source").Count;
+                string[] header = contents[0].Split(',');
+                for (int i = 0; i < header.Length; i++)
+                {
+                    header[i] = header[i].Replace("\r", string.Empty).Trim('\"');
+                }
+                int indexOfName = Array.IndexOf(header, "Name");
+                int indexOfEmail = Array.IndexOf(header, "Email");
+                int indexOfPhoneNumber = Array.IndexOf(header, "PhoneNumber");
+                int indexOfProfileImage = Array.IndexOf(header, "ProfileImgUrl");
+                int[] indexOfSocialAccountSource = new int[countOfSocialIds];
+                int[] indexOfSocialAccountIdentifier = new int[countOfSocialIds];
+                for (int i = 0; i < countOfSocialIds; i++)
+                {
+                    indexOfSocialAccountSource[i] = Array.IndexOf(header, $"SocialId/{i}/Source");
+                    indexOfSocialAccountIdentifier[i] = Array.IndexOf(header, $"SocialId/{i}/Identifier");
+                }
+
+                for (int i = 1; i <= contents.Count() - 1; i++)
+                {
+                    string[] info = contents[i].Split(',');
+                    EndUser endUser = new EndUser
+                    {
+                        Name = info[indexOfName].Trim('\"'),
+                        Email = info[indexOfEmail].Trim('\"'),
+                        Phonenumber = info[indexOfPhoneNumber].Trim('\"'),
+                        ProfileImgUrl = info[indexOfProfileImage].Replace("\r", string.Empty).Trim('\"'),
+                        SocialId = new List<UserSocialId>(),
+                        Organization = _context.organisation.FirstOrDefault(x => x.OrganisationName == organisation.OrganisationName) ?? organisation,
+                        CreatedOn = DateTime.Now,
+                        UpdatedOn = DateTime.Now
+                    };
+                    for (int j = 0; j < countOfSocialIds; j++)
+                    {
+                        if (info[indexOfSocialAccountSource[j]].Trim('\"') != string.Empty && info[indexOfSocialAccountIdentifier[j]].Trim('\"') != string.Empty)
+                        {
+                            endUser.SocialId.Add(new UserSocialId
+                            {
+                                Source = info[indexOfSocialAccountSource[j]].Trim('\"'),
+                                Identifier = info[indexOfSocialAccountIdentifier[j]].Trim('\"'),
+                                CreatedOn = DateTime.Now,
+                                UpdatedOn = DateTime.Now
+                            });
+                        }
+                    }
+                    _context.EndUser.Add(endUser);
+                    await _context.SaveChangesAsync();
+                }
             }
-            int indexOfName = Array.IndexOf(header, "Name");
-            int indexOfEmail = Array.IndexOf(header, "Email");
-            int indexOfPhoneNumber = Array.IndexOf(header, "PhoneNumber");
-            int indexOfProfileImage = Array.IndexOf(header, "ProfileImgUrl");
-            int[] indexOfSocialAccountSource = new int[countOfSocialIds];
-            int[] indexOfSocialAccountIdentifier = new int[countOfSocialIds];
-            for (int i = 0; i < countOfSocialIds; i++)
+            catch (FileNotFoundException ex)
             {
-                indexOfSocialAccountSource[i] = Array.IndexOf(header, $"SocialId/{i}/Source");
-                indexOfSocialAccountIdentifier[i] = Array.IndexOf(header, $"SocialId/{i}/Identifier");
+                throw ex;
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                throw ex;
+            }
+            catch (ArrayTypeMismatchException ex)
+            {
+                throw ex;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw ex;
             }
 
-            for (int i = 1; i <= contents.Count() - 1; i++)
-            {
-                string[] info = contents[i].Split(',');
-                EndUser endUser = new EndUser
-                {
-                    Name = info[indexOfName].Trim('\"'),
-                    Email = info[indexOfEmail].Trim('\"'),
-                    Phonenumber = info[indexOfPhoneNumber].Trim('\"'),
-                    ProfileImgUrl = info[indexOfProfileImage].Replace("\r", string.Empty).Trim('\"'),
-                    SocialId = new List<UserSocialId>(),
-                    Organization = _context.organisation.FirstOrDefault(x => x.OrganisationName == organisation.OrganisationName) ?? organisation,
-                    CreatedOn = DateTime.Now,
-                    UpdatedOn = DateTime.Now
-                };
-                for (int j = 0; j < countOfSocialIds; j++)
-                {
-                    if (info[indexOfSocialAccountSource[j]].Trim('\"') != string.Empty && info[indexOfSocialAccountIdentifier[j]].Trim('\"') != string.Empty)
-                    {
-                        endUser.SocialId.Add(new UserSocialId
-                        {
-                            Source = info[indexOfSocialAccountSource[j]].Trim('\"'),
-                            Identifier = info[indexOfSocialAccountIdentifier[j]].Trim('\"'),
-                            CreatedOn = DateTime.Now,
-                            UpdatedOn = DateTime.Now
-                        });
-                    }
-                }
-                _context.EndUser.Add(endUser);
-                await _context.SaveChangesAsync();
-            }
         }
         public async Task<string> ReadFileEndUserAsync(string filepath)
         {
-            string fileData = "";
-            using (StreamReader streamReader = new StreamReader(filepath))
+            try
             {
-                fileData = await streamReader.ReadToEndAsync();
+                string fileData = "";
+                using (StreamReader streamReader = new StreamReader(filepath))
+                {
+                    fileData = await streamReader.ReadToEndAsync();
+                }
+                return fileData;
             }
-            return fileData;
+            catch (FileNotFoundException ex)
+            {
+                throw ex;
+            }
         }
     }
 }
