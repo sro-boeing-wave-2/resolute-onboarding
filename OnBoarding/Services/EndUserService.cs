@@ -99,7 +99,7 @@ namespace OnBoarding.Services
                     Name = info[indexOfName].Trim('\"'),
                     Email = info[indexOfEmail].Trim('\"'),
                     PhoneNumber = info[indexOfPhoneNumber].Trim('\"'),
-                    ProfileImgUrl = info[indexOfProfileImage].Trim('\"'),
+                    ProfileImgUrl = info[indexOfProfileImage].Replace("\r", string.Empty).Trim('\"'),
                     SocialId = new List<UserSocialId>(),
                     Organization = _context.Organisation.FirstOrDefault(x => x.OrganisationName == Organisation.OrganisationName) ?? Organisation,
                     CreatedOn = DateTime.Now,

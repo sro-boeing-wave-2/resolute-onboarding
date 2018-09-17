@@ -17,7 +17,7 @@ namespace OnBoarding.Models
         public long AgentId { get => agentId; set => agentId = value; }
         public string Name { get => name; set => name = value; }
         public string ProfileImageUrl { get => profileImageUrl; set => profileImageUrl = value; }
-        public long OrganisartionId { get => organisartionId; set => organisartionId = value; }
+        public long OrganisationId { get => organisartionId; set => organisartionId = value; }
         public string DepartmentName { get => departmentName; set => departmentName = value; }
         public string OrganisationName { get => organisationName; set => organisationName = value; }
     }

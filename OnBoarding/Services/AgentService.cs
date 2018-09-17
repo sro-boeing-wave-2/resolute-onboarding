@@ -49,7 +49,7 @@ namespace OnBoarding.Services
                     Email = info[indexOfEmail].Trim('\"'),
                     PhoneNumber = info[indexOfPhoneNumber].Trim('\"'),
                     ProfileImgUrl = info[indexOfProfileImage].Trim('\"'),
-                    Department = _context.Department.FirstOrDefault(x => x.DepartmentName == info[indexOfDepartment].Trim('\"')) ?? new Department { DepartmentName = info[indexOfDepartment].Trim('\"'), CreatedOn = DateTime.Now, UpdatedOn = DateTime.Now },
+                    Department = _context.Department.FirstOrDefault(x => x.DepartmentName == info[indexOfDepartment].Replace("\r", string.Empty).Trim('\"')) ?? new Department { DepartmentName = info[indexOfDepartment].Replace("\r", string.Empty).Trim('\"'), CreatedOn = DateTime.Now, UpdatedOn = DateTime.Now },
                     Organization = _context.Organisation.FirstOrDefault(x => x.OrganisationName == Organisation.OrganisationName) ?? Organisation,
                     UpdatedOn = DateTime.Now
                 };
@@ -97,7 +97,7 @@ namespace OnBoarding.Services
                 AgentId = agent.Id,
                 Name = agent.Name,
                 ProfileImageUrl = agent.ProfileImgUrl,
-                OrganisartionId = agent.Organization.Id,
+                OrganisationId = agent.Organization.Id,
                 DepartmentName = agent.Department.DepartmentName,
                 OrganisationName = agent.Organization.OrganisationName
             };
