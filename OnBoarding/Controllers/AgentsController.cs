@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.EntityFrameworkCore;
 using OnBoarding.Models;
 using OnBoarding.Services;
@@ -63,6 +64,20 @@ namespace OnBoarding.Controllers
             return Ok(agent);
         }
 
+        [HttpGet("query")]
+        public async Task<IActionResult> GetAgentByQuery([FromQuery(Name = "Name")] string Name, [FromQuery(Name = "Email")] string Email, [FromQuery(Name = "phonenumber")] string phonenumber)
+        {
+            try
+            {
+                var result = _service.RetrieveAgentDto(Email, Name, phonenumber);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Result Not Found");
+                return BadRequest(ModelState);
+            }
+        }
 
         // POST: api/Agents
         [HttpPost]
@@ -72,8 +87,11 @@ namespace OnBoarding.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            await _service.ExtractData(Organisation);
+            return await ExtractData(Organisation);
+        }
+        public async Task<IActionResult> ExtractData(Organisation organisation)
+        {
+            await _service.ExtractData(organisation);
             return Ok();
         }
 
