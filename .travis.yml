@@ -1,5 +1,5 @@
 language: csharp
-solution: Resolute.sln
+solution: OnBoarding.sln
 notifications:
   email:
     on_success: always
@@ -9,4 +9,6 @@ mono: none
 dotnet: 2.1
 script:
   - dotnet restore
-  - dotnet test 
+  - chmod +x ./deploy.sh
+after_success: 
+  - /bin/bash ./deploy.sh
