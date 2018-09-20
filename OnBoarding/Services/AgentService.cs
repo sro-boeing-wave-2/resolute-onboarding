@@ -61,7 +61,7 @@ namespace OnBoarding.Services
                 };
 
                
-                HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, "http://35.221.125.153:8081/api/Auth/user/add")
+                HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, "http://localhost:8081/api/Auth/user/add")
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(agentDetails), UnicodeEncoding.UTF8, "application/json")
                 };
