@@ -64,21 +64,6 @@ namespace OnBoarding.Controllers
             return Ok(agent);
         }
 
-        [HttpGet("query")]
-        public async Task<IActionResult> GetAgentByQuery([FromQuery(Name = "Name")] string Name, [FromQuery(Name = "Email")] string Email, [FromQuery(Name = "phonenumber")] string phonenumber)
-        {
-            try
-            {
-                var result = _service.RetrieveAgentDto(Email, Name, phonenumber);
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Result Not Found");
-                return BadRequest(ModelState);
-            }
-        }
-
         // POST: api/Agents
         [HttpPost]
         public async Task<IActionResult> PostAgent([FromBody] Organisation Organisation)

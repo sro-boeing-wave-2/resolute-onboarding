@@ -57,8 +57,8 @@ namespace OnBoarding.Services
             try
             {
                 Organisation temp;
-                return temp = _context.Organisation.Where(element => element.OrganisationName == (organisationName == null ? element.OrganisationName : organisationName)
-                         && element.Email == (Email == null ? element.Email : Email)).ToList()[0];
+                return temp = _context.Organisation.Where(element => element.OrganisationName == (organisationName ?? element.OrganisationName)
+                         && element.Email == (Email ?? element.Email)).ToList()[0];
             }
             catch (KeyNotFoundException ex)
             {
