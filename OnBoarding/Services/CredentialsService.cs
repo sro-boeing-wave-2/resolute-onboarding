@@ -16,26 +16,60 @@ namespace OnBoarding.Services
         }
         public IEnumerable<Organisation> GetAllSignUp()
         {
-            return _context.Organisation;
+            try
+            {
+                return _context.Organisation;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine("data not found");
+                throw ex;
+            }
         }
         public async Task<Organisation> GetSignUp(long id)
         {
-            return await _context.Organisation.FindAsync(id);
+            try
+            {
+                return await _context.Organisation.FindAsync(id);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine("data not found");
+                throw ex;
+            }
         }
 
         public async Task CreateCredentials(Organisation organisation)
         {
-            _context.Organisation.Add(organisation);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Organisation.Add(organisation);
+                await _context.SaveChangesAsync();
+            }
+            catch (NullReferenceException ex)
+            {
+                Console.WriteLine("null reference exception occured");
+                throw ex;
+            }
         }
         public Organisation GetAllOrganisation(string organisationName, string Email)
         {
-            return  _context.Organisation.Where(
-
-                element => element.OrganisationName == organisationName 
-                || element.Email == Email
-                ).ToList()[0];
-                //.Where(x => ((Organisation_name == null || x.Organisation_name == Organisation_name) && (Email == null || x.Email == Email)));
+            try
+            {
+                Organisation temp;
+                return temp = _context.Organisation.Where(element => element.OrganisationName == (organisationName == null ? element.OrganisationName : organisationName)
+                         && element.Email == (Email == null ? element.Email : Email)).ToList()[0];
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine("data not found");
+                throw ex;
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine("duplicate data found");
+                throw ex;
+            }
         }
     }
 }
