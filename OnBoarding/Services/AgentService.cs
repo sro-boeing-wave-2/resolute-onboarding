@@ -88,6 +88,24 @@ namespace OnBoarding.Services
             return await _context.Agent.Include(x => x.Department).Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<AgentDto> RetrieveAgentDtoById(long id)
+        {
+            Agent agent = await _context.Agent.Include(x => x.Department)
+                 .Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
+            AgentDto agentDto = new AgentDto
+            {
+                AgentId = agent.Id,
+                Name = agent.Name,
+                ProfileImageUrl = agent.ProfileImgUrl,
+                OrganisationId = agent.Organization.Id,
+                DepartmentName = agent.Department.DepartmentName,
+                OrganisationName = agent.Organization.OrganisationName
+            };
+
+            return agentDto;
+
+        }
+
         public async Task<AgentDto> RetrieveAgentDto(string email, string name, string phoneNumber)
         {
             Agent agent = await _context.Agent.Include(x => x.Department)
