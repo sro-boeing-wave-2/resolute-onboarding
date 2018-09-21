@@ -91,8 +91,27 @@ namespace OnBoarding.Services
         public async Task<AgentDto> RetrieveAgentDto(string email, string name, string phoneNumber)
         {
             Agent agent = await _context.Agent.Include(x => x.Department)
-                .Include(x => x.Organization).FirstOrDefaultAsync(AgentMatches(email, name, phoneNumber));
-            AgentDto agentDto = new AgentDto
+                .Include(x => x.Organization)
+                .FirstOrDefaultAsync(AgentMatches(email, name, phoneNumber));
+
+            AgentDto agentDto = CreateAgentDto(agent);
+
+            return agentDto;
+        }
+
+        public async Task<AgentDto> RetrieveAgentDtoById(long id)
+        {
+            Agent agent = await _context.Agent.Include(x => x.Department)
+                 .Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
+            AgentDto agentDto = CreateAgentDto(agent);
+
+            return agentDto;
+
+        }
+
+        private static AgentDto CreateAgentDto(Agent agent)
+        {
+            return new AgentDto
             {
                 AgentId = agent.Id,
                 Name = agent.Name,
@@ -101,10 +120,7 @@ namespace OnBoarding.Services
                 DepartmentName = agent.Department.DepartmentName,
                 OrganisationName = agent.Organization.OrganisationName
             };
-
-            return agentDto;
         }
-
 
         public string TrimInput(string Input)
         {

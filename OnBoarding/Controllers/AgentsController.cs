@@ -43,6 +43,24 @@ namespace OnBoarding.Controllers
             return _service.GetUserName(id);
         }
 
+        [HttpGet("leaderboard")]
+        public async Task<IActionResult> GetAgentDto([FromQuery] long id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            AgentDto agent = await _service.RetrieveAgentDtoById(id);
+
+
+            if (agent == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(agent);
+        }
 
         // GET: api/Agents/5
         [HttpGet("{id}")]

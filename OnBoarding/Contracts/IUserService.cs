@@ -20,6 +20,7 @@ namespace OnBoarding.Services
     {
         IEnumerable<Agent> RetrieveAgent();
         Task<Agent> RetrieveAgentById(long id);
+        Task<AgentDto> RetrieveAgentDtoById(long id);
         Task<AgentDto> RetrieveAgentDto(string email, string name, string phoneNumber);
     }
 }
