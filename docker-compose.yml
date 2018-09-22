@@ -1,11 +1,12 @@
 version: "3"
 services:
     web:
+        container_name: OnBoarding
         build: OnBoarding/
-        ports:
-            - "8082:5000"
         depends_on:
             - db
+        environment: 
+            SERVICE_NAME: OnBoarding
     db:
         image: "microsoft/mssql-server-linux:2017-latest"
         environment:
