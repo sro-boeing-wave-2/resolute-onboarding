@@ -215,6 +215,24 @@ paths:
               type: array
               items:
                 $ref: '#/definitions/EndUser'
+  /EndUsers/count:
+    get:
+        description: Get the count of endusers
+        produces:
+          - application/json
+        parameters:
+        - name: "query"
+          in: "path"
+          description: "count of End User to return"
+          required: true
+          type: "integer"
+        responses:
+          200:
+            description: OK
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/EndUser'
   /EndUsers/{query}:
     get:
       description: Get the enduser by his Organization name and Email
@@ -268,9 +286,27 @@ paths:
         produces:
           - application/json
         parameters:
-        - name: "id"
+        - name: "query"
           in: "path"
           description: "ID of the agent to return"
+          required: true
+          type: "integer"
+        responses:
+          200:
+            description: OK
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/Agent'
+  /Agents/count:
+    get:
+        description: Get the count of agents
+        produces:
+          - application/json
+        parameters:
+        - name: "query"
+          in: "path"
+          description: "count of the agent to return"
           required: true
           type: "integer"
         responses:
