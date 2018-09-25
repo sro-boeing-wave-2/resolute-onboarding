@@ -8,6 +8,7 @@ using OnBoarding.Models;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Text;
+using System.Net.Http.Headers;
 
 namespace OnBoarding.Services
 {
@@ -61,10 +62,12 @@ namespace OnBoarding.Services
                 };
 
                
-                HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, "http://35.221.125.153/Auth/user/add")
+                HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, "http://35.221.125.153/user/add")
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(agentDetails), UnicodeEncoding.UTF8, "application/json")
                 };
+                var headers = postMessage.Headers;
+                headers.Add("Access", "Allow_Service");
                 var response = await _client.SendAsync(postMessage);
                 var responseString = await response.Content.ReadAsStringAsync();
 
