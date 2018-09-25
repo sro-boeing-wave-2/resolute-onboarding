@@ -80,7 +80,10 @@ namespace OnBoarding.Services
         {
             return _context.Agent.FirstOrDefault(x => x.Id == id).Name;
         }
-
+        public long GetUserCount(long agentId)
+        {
+            return _context.Agent.Count();
+        }
         public IEnumerable<Agent> RetrieveAgent()
         {
             return _context.Agent.Include(x => x.Department).Include(x => x.Organization);

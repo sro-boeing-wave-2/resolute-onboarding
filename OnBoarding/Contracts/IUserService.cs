@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using OnBoarding.Models;
 
@@ -9,6 +9,7 @@ namespace OnBoarding.Services
         Task ExtractData(Organisation Organisation);
         string TrimInput(string Input);
         string GetUserName(long id);
+        long GetUserCount(long id);
     }
     public interface IEndUserService : IUserService
     {

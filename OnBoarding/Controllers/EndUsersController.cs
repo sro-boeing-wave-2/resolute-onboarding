@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,7 +30,11 @@ namespace OnBoarding.Controllers
             return _service.RetrieveUser();
         }
 
-
+        [HttpGet("Count")]
+        public long GetEndUserCount([FromQuery] long id)
+        {
+            return _service.GetUserCount(id);
+        }
 
         // GET: api/EndUsers/5
         [HttpGet("{id}")]
