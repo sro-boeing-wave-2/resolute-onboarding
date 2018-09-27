@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -43,6 +43,11 @@ namespace OnBoarding.Controllers
         public string GetAgentName([FromQuery(Name = "Id")] long id)
         {
             return _service.GetUserName(id);
+        }
+        [HttpGet("Count")]
+        public long GetAgentCount([FromQuery] long id)
+        {
+            return _service.GetUserCount(id);
         }
 
         [HttpGet("leaderboard")]

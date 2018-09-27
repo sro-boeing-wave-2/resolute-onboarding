@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnBoarding.Models;
 using System;
@@ -24,6 +24,10 @@ namespace OnBoarding.Services
         public async Task<EndUser> RetrieveUserById(long id)
         {
             return await _context.EndUser.Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
+        }
+        public long GetUserCount(long EndUserId)
+        {
+            return _context.EndUser.Count();
         }
 
         public string GetUserName(long id)
