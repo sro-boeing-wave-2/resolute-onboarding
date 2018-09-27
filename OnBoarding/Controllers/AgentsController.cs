@@ -27,6 +27,8 @@ namespace OnBoarding.Controllers
         public IEnumerable<Agent> GetAgents()
         {
             return _service.RetrieveAgent();
+
+
         }
         [HttpGet("query")]
         public async Task<IActionResult> GetAgentAsync([FromQuery(Name = "Name")] string Name, [FromQuery(Name = "Email")] string Email, [FromQuery(Name = "phonenumber")] string PhoneNumber)

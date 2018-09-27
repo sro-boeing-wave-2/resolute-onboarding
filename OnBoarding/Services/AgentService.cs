@@ -37,7 +37,6 @@ namespace OnBoarding.Services
             int indexOfEmail = Array.IndexOf(header, "Email");
             int indexOfPhoneNumber = Array.IndexOf(header, "PhoneNumber");
             int indexOfProfileImage = Array.IndexOf(header, "ProfileImg");
-            int indexOfDepartment = Array.IndexOf(header, "Department");
 
             for (int i = 1; i <= contents.Count() - 1; i++)
             {
@@ -49,7 +48,6 @@ namespace OnBoarding.Services
                     Email = info[indexOfEmail].Trim('\"'),
                     PhoneNumber = info[indexOfPhoneNumber].Trim('\"'),
                     ProfileImgUrl = info[indexOfProfileImage].Trim('\"'),
-                    Department = _context.Department.FirstOrDefault(x => x.DepartmentName == info[indexOfDepartment].Replace("\r", string.Empty).Trim('\"')) ?? new Department { DepartmentName = info[indexOfDepartment].Replace("\r", string.Empty).Trim('\"'), CreatedOn = DateTime.Now, UpdatedOn = DateTime.Now },
                     Organization = _context.Organisation.FirstOrDefault(x => x.OrganisationName == Organisation.OrganisationName) ?? Organisation,
                     UpdatedOn = DateTime.Now
                 };
@@ -61,12 +59,12 @@ namespace OnBoarding.Services
                 };
 
                
-                HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, "http://35.221.125.153:8081/api/Auth/user/add")
-                {
-                    Content = new StringContent(JsonConvert.SerializeObject(agentDetails), UnicodeEncoding.UTF8, "application/json")
-                };
-                var response = await _client.SendAsync(postMessage);
-                var responseString = await response.Content.ReadAsStringAsync();
+                //HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, "http://35.221.125.153:8081/api/Auth/user/add")
+                //{
+                //    Content = new StringContent(JsonConvert.SerializeObject(agentDetails), UnicodeEncoding.UTF8, "application/json")
+                //};
+                //var response = await _client.SendAsync(postMessage);
+                //var responseString = await response.Content.ReadAsStringAsync();
 
                 _context.Agent.Add(agent);
                 await _context.SaveChangesAsync();
@@ -80,17 +78,17 @@ namespace OnBoarding.Services
 
         public IEnumerable<Agent> RetrieveAgent()
         {
-            return _context.Agent.Include(x => x.Department).Include(x => x.Organization);
+            return _context.Agent.Include(x => x.Organization);
         }
 
         public async Task<Agent> RetrieveAgentById(long id)
         {
-            return await _context.Agent.Include(x => x.Department).Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Agent.Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<AgentDto> RetrieveAgentDto(string email, string name, string phoneNumber)
         {
-            Agent agent = await _context.Agent.Include(x => x.Department)
+            Agent agent = await _context.Agent
                 .Include(x => x.Organization)
                 .FirstOrDefaultAsync(AgentMatches(email, name, phoneNumber));
 
@@ -101,7 +99,7 @@ namespace OnBoarding.Services
 
         public async Task<AgentDto> RetrieveAgentDtoById(long id)
         {
-            Agent agent = await _context.Agent.Include(x => x.Department)
+            Agent agent = await _context.Agent
                  .Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
             AgentDto agentDto = CreateAgentDto(agent);
 
@@ -117,7 +115,6 @@ namespace OnBoarding.Services
                 Name = agent.Name,
                 ProfileImageUrl = agent.ProfileImgUrl,
                 OrganisationId = agent.Organization.Id,
-                DepartmentName = agent.Department.DepartmentName,
                 OrganisationName = agent.Organization.OrganisationName
             };
         }

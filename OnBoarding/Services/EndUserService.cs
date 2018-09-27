@@ -18,12 +18,12 @@ namespace OnBoarding.Services
         }
         public IEnumerable<EndUser> RetrieveUser()
         {
-            return _context.EndUser.Include(x => x.SocialId).Include(x => x.Organization);
+            return _context.EndUser.Include(x => x.Organization);
         }
 
         public async Task<EndUser> RetrieveUserById(long id)
         {
-            return await _context.EndUser.Include(x => x.SocialId).Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.EndUser.Include(x => x.Organization).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public string GetUserName(long id)
@@ -40,7 +40,7 @@ namespace OnBoarding.Services
 
         public async Task<EndUserDto> RetrieveUserDto(string email, string name, string phoneNumber)
         {
-            EndUser endUser = await _context.EndUser.Include(x => x.SocialId).Include(x => x.Organization).FirstOrDefaultAsync(EndUserMatches(email, name, phoneNumber));
+            EndUser endUser = await _context.EndUser.Include(x => x.Organization).FirstOrDefaultAsync(EndUserMatches(email, name, phoneNumber));
             EndUserDto endUserDto = new EndUserDto
             {
                 EndUserId = endUser.Id,
@@ -82,13 +82,6 @@ namespace OnBoarding.Services
             long indexOfEmail = Array.IndexOf(header, "Email");
             long indexOfPhoneNumber = Array.IndexOf(header, "PhoneNumber");
             long indexOfProfileImage = Array.IndexOf(header, "ProfileImgUrl");
-            long[] indexOfSocialAccountSource = new long[countOfSocialIds];
-            long[] indexOfSocialAccountIdentifier = new long[countOfSocialIds];
-            for (long i = 0; i < countOfSocialIds; i++)
-            {
-                indexOfSocialAccountSource[i] = Array.IndexOf(header, $"SocialId/{i}/Source");
-                indexOfSocialAccountIdentifier[i] = Array.IndexOf(header, $"SocialId/{i}/Identifier");
-            }
 
             for (long i = 1; i <= contents.Count() - 1; i++)
             {
@@ -100,26 +93,13 @@ namespace OnBoarding.Services
                     Email = info[indexOfEmail].Trim('\"'),
                     PhoneNumber = info[indexOfPhoneNumber].Trim('\"'),
                     ProfileImgUrl = info[indexOfProfileImage].Replace("\r", string.Empty).Trim('\"'),
-                    SocialId = new List<UserSocialId>(),
                     Organization = _context.Organisation.FirstOrDefault(x => x.OrganisationName == Organisation.OrganisationName) ?? Organisation,
                     CreatedOn = DateTime.Now,
                     UpdatedOn = DateTime.Now
 
                 };
 
-                for (long j = 0; j < countOfSocialIds; j++)
-                {
-                    if (info[indexOfSocialAccountSource[j]].Trim('\"') != string.Empty && info[indexOfSocialAccountIdentifier[j]].Trim('\"') != string.Empty)
-                    {
-                        endUser.SocialId.Add(new UserSocialId
-                        {
-                            Source = info[indexOfSocialAccountSource[j]].Trim('\"'),
-                            Identifier = info[indexOfSocialAccountIdentifier[j]].Trim('\"'),
-                            CreatedOn = DateTime.Now,
-                            UpdatedOn = DateTime.Now
-                        });
-                    }
-                }
+                
 
                 _context.EndUser.Add(endUser);
                 await _context.SaveChangesAsync();
