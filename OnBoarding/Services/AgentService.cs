@@ -60,7 +60,7 @@ namespace OnBoarding.Services
                 };
 
                
-                HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, "http://35.221.125.153/user/add")
+                HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, "http://35.221.76.107/user/add")
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(agentDetails), UnicodeEncoding.UTF8, "application/json")
                 };
