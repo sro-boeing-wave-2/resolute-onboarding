@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,6 +27,8 @@ namespace OnBoarding.Controllers
         public IEnumerable<Agent> GetAgents()
         {
             return _service.RetrieveAgent();
+
+
         }
         [HttpGet("query")]
         public async Task<IActionResult> GetAgentAsync([FromQuery(Name = "Name")] string Name, [FromQuery(Name = "Email")] string Email, [FromQuery(Name = "phonenumber")] string PhoneNumber)
@@ -41,6 +43,11 @@ namespace OnBoarding.Controllers
         public string GetAgentName([FromQuery(Name = "Id")] long id)
         {
             return _service.GetUserName(id);
+        }
+        [HttpGet("Count")]
+        public long GetAgentCount([FromQuery] long id)
+        {
+            return _service.GetUserCount(id);
         }
 
         [HttpGet("leaderboard")]

@@ -7,12 +7,8 @@ namespace OnBoarding.Models
 {
     public class OrganisationDto
     {
-        string organisationName;
-        string email;
-        string imageUrl;
 
-        public string OrganisationName { get => organisationName; set => organisationName = value; }
-        public string Email { get => email; set => email = value; }
-        public string ImageUrl { get => imageUrl; set => imageUrl = value; }
+        public string OrganisationName { get; set; }
+        public string Email { get; set; }
     }
 }

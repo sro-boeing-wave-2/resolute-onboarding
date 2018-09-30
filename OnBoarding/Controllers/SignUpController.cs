@@ -52,8 +52,7 @@ namespace OnBoarding.Controllers
             OrganisationDto organisationDto = new OrganisationDto
             {
                 OrganisationName = organisation.OrganisationName,
-                Email = organisation.Email,
-                ImageUrl = organisation.LogoUrl
+                Email = organisation.Email
             };
 
             await _service.CreateCredentials(organisation);

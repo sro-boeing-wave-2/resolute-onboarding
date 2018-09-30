@@ -10,8 +10,8 @@ using OnBoarding.Models;
 namespace OnBoarding.Migrations
 {
     [DbContext(typeof(OnBoardingContext))]
-    [Migration("20180912104500_FirstMigration")]
-    partial class FirstMigration
+    [Migration("20180926121020_Remodelled")]
+    partial class Remodelled
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,8 +31,6 @@ namespace OnBoarding.Migrations
 
                     b.Property<DateTime>("CreatedOn");
 
-                    b.Property<long?>("DepartmentId");
-
                     b.Property<string>("Email");
 
                     b.Property<string>("Name");
@@ -49,32 +47,9 @@ namespace OnBoarding.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DepartmentId");
-
                     b.HasIndex("OrganizationId");
 
                     b.ToTable("Agent");
-                });
-
-            modelBuilder.Entity("OnBoarding.Models.Department", b =>
-                {
-                    b.Property<long>("DepartmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedOn");
-
-                    b.Property<string>("DepartmentName");
-
-                    b.Property<long>("UpdatedBy");
-
-                    b.Property<DateTime>("UpdatedOn");
-
-                    b.HasKey("DepartmentId");
-
-                    b.ToTable("Department");
                 });
 
             modelBuilder.Entity("OnBoarding.Models.EndUser", b =>
@@ -147,8 +122,6 @@ namespace OnBoarding.Migrations
 
                     b.Property<DateTime>("CreatedOn");
 
-                    b.Property<long?>("EndUserId");
-
                     b.Property<string>("Identifier");
 
                     b.Property<string>("Source");
@@ -159,17 +132,11 @@ namespace OnBoarding.Migrations
 
                     b.HasKey("SocialId");
 
-                    b.HasIndex("EndUserId");
-
                     b.ToTable("UserSocialId");
                 });
 
             modelBuilder.Entity("OnBoarding.Models.Agent", b =>
                 {
-                    b.HasOne("OnBoarding.Models.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
                     b.HasOne("OnBoarding.Models.Organisation", "Organization")
                         .WithMany()
                         .HasForeignKey("OrganizationId");
@@ -180,13 +147,6 @@ namespace OnBoarding.Migrations
                     b.HasOne("OnBoarding.Models.Organisation", "Organization")
                         .WithMany()
                         .HasForeignKey("OrganizationId");
-                });
-
-            modelBuilder.Entity("OnBoarding.Models.UserSocialId", b =>
-                {
-                    b.HasOne("OnBoarding.Models.EndUser")
-                        .WithMany("SocialId")
-                        .HasForeignKey("EndUserId");
                 });
 #pragma warning restore 612, 618
         }
