@@ -9,6 +9,8 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.Text;
 using System.Net.Http.Headers;
+using OnBoarding.Utils;
+
 
 namespace OnBoarding.Services
 {
@@ -38,7 +40,7 @@ namespace OnBoarding.Services
             int indexOfEmail = Array.IndexOf(header, "Email");
             int indexOfPhoneNumber = Array.IndexOf(header, "PhoneNumber");
             int indexOfProfileImage = Array.IndexOf(header, "ProfileImg");
-
+            string url = Constants.BASE_URL + Constants.POST_AUTHDATA;
             for (int i = 1; i <= contents.Count() - 1; i++)
             {
                 string[] info = contents[i].Split(',');
@@ -59,7 +61,7 @@ namespace OnBoarding.Services
                     Password = "TestPassword@123"
                 };
 
-                HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, "http://35.221.88.74/user/add")
+                HttpRequestMessage postMessage = new HttpRequestMessage(HttpMethod.Post, url)
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(agentDetails), UnicodeEncoding.UTF8, "application/json")
                 };
