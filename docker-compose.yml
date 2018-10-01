@@ -15,3 +15,5 @@ services:
       environment:
         SA_PASSWORD: "Test@123"
         ACCEPT_EULA: "Y"
+      volumes :
+           - "/data/resolute-onboarding:/var/opt/mssql/"
