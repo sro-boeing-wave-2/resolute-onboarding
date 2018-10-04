@@ -43,7 +43,14 @@ namespace OnBoarding.Services
             string url = Constants.BASE_URL + Constants.POST_AUTHDATA;
             for (int i = 1; i <= contents.Count() - 1; i++)
             {
+
                 string[] info = contents[i].Split(',');
+                Console.WriteLine("Content Length");
+                Console.WriteLine(contents.Length);
+                Console.WriteLine("Info Length");
+                Console.WriteLine(info.Length);
+                Console.WriteLine("Info");
+                Console.WriteLine(info);
 
                 Agent agent = new Agent
                 {
@@ -51,7 +58,7 @@ namespace OnBoarding.Services
                     Email = info[indexOfEmail].Trim('\"'),
                     PhoneNumber = info[indexOfPhoneNumber].Trim('\"'),
                     ProfileImgUrl = info[indexOfProfileImage].Trim('\"'),
-                    Organization = _context.Organisation.FirstOrDefault(x => x.OrganisationName == Organisation.OrganisationName) ?? Organisation,
+                    Organization = Organisation,
                     UpdatedOn = DateTime.Now
                 };
 
